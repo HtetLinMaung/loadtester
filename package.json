@@ -1,0 +1,26 @@
+{
+  "name": "loadtester",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "starless-server start",
+    "dev": "nodemon node_modules/starless-server start",
+    "lint-init": "eslint --init"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "eslint": "^8.25.0",
+    "nodemon": "^2.0.20",
+    "starless-server": "^1.9.4"
+  },
+  "dependencies": {
+    "axios": "^1.1.2",
+    "code-alchemy": "^1.1.7",
+    "moment": "^2.29.4",
+    "starless-async": "^1.0.0",
+    "uuid": "^9.0.0"
+  }
+}
