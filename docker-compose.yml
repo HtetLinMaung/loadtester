@@ -1,0 +1,9 @@
+version: '3.9'
+
+services:
+  loadtester:
+    image: htetlinmaung/loadtester
+    restart: always
+    build: .
+    ports:
+      - "3008:3000"
