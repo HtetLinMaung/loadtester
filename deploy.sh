@@ -1,0 +1,1 @@
+sudo docker-compose down && git pull && sudo docker image rm -f htetlinmaung/loadtester && sudo docker-compose up -d

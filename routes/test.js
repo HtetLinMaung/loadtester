@@ -4,7 +4,7 @@ const server = require("starless-server");
 const { v4 } = require("uuid");
 
 module.exports = brewBlankExpressFunc(async (req, res) => {
-  const io = server.getIO();
+  const io = server.default.getIO();
   const data = await testLoad(
     req.body,
     (result) => {
