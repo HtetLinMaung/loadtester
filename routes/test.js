@@ -20,7 +20,7 @@ module.exports = brewBlankExpressFunc(async (req, res) => {
         item,
         ref: req.body.ref || v4(),
       });
-      item["results"] = results;
+      // item["results"] = results;
     }
   );
   res.json({
