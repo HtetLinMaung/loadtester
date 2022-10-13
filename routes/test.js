@@ -5,6 +5,7 @@ const { v4 } = require("uuid");
 
 module.exports = brewBlankExpressFunc(async (req, res) => {
   const io = server.default.getIO();
+
   const data = await testLoad(
     req.body,
     (result) => {
@@ -19,6 +20,7 @@ module.exports = brewBlankExpressFunc(async (req, res) => {
         item,
         ref: req.body.ref || v4(),
       });
+      item["results"] = results;
     }
   );
   res.json({

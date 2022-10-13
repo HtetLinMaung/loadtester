@@ -25,7 +25,7 @@ module.exports = async (
       });
     }
   } catch (err) {
-    console.log(err.message);
+    // console.log(err.message);
     errMessage = err.message;
     stack = err.stack;
     res = err.response;
