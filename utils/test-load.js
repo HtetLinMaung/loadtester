@@ -29,7 +29,7 @@ module.exports = async (json = {}, resCb = () => {}, cb = () => {}) => {
       const result = await promise;
       //   console.log(result);
       results.push(result);
-      resCb(result);
+      resCb(result, endpointName);
     }
 
     const durations = results.map((r) => r.duration);
