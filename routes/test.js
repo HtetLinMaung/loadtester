@@ -26,9 +26,11 @@ module.exports = brewBlankExpressFunc(async (req, res) => {
         item,
         ref: req.body.ref || v4(),
       });
+      finished[item.name] = [];
       // item["results"] = results;
     }
   );
+
   res.json({
     code: 200,
     message: "Test complete",
