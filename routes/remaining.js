@@ -3,6 +3,15 @@ const { finished } = require("../constants");
 
 module.exports = brewBlankExpressFunc(async (req, res) => {
   const results = finished[req.query.name];
+  if (!results) {
+    const err = new Error("Not found!");
+    err.status = 404;
+    err.body = {
+      code: err.status,
+      message: err.message,
+    };
+    throw err;
+  }
 
   const durations = results.map((r) => r.duration);
   const successCounts = results.filter((r) => r.success).length;
