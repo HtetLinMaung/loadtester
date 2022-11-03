@@ -17,6 +17,7 @@
     "starless-server": "^1.9.4"
   },
   "dependencies": {
+    "@faker-js/faker": "^7.6.0",
     "axios": "^1.1.2",
     "code-alchemy": "^1.1.8",
     "moment": "^2.29.4",

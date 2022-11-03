@@ -1,14 +1,21 @@
 const { timeout } = require("starless-async");
+const injectFake = require("./inject-fake");
 const request = require("./request");
 
 module.exports = async (json = {}, resCb = () => {}, cb = () => {}) => {
   const items = [];
   for (const [endpointName, v] of Object.entries(json.endpoints)) {
     const url = `${json.domain}${v.path}`;
-    const headers = v.headers || {};
-    const body = v.body || {};
-    const query = v.query || {};
+    const headers = injectFake(v.headers || {});
+    let body = v.body || {};
+    const query = injectFake(v.query || {});
     const n = v.n || v.t;
+
+    if (!body.isArray(body)) {
+      body = injectFake(body);
+    } else {
+      body = body.map((b) => injectFake(b));
+    }
 
     const promises = [];
     for (let i = 0; i < v.t; i++) {
