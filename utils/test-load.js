@@ -11,10 +11,6 @@ module.exports = async (json = {}, resCb = () => {}, cb = () => {}) => {
     const query = v.query || {};
     const n = v.n || v.t;
 
-    if (body.isArray(body)) {
-      body = body.map((b) => injectFake(b));
-    }
-
     const promises = [];
     for (let i = 0; i < v.t; i++) {
       if (promises.length % n == 0) {
@@ -23,7 +19,13 @@ module.exports = async (json = {}, resCb = () => {}, cb = () => {}) => {
       if (Array.isArray(body)) {
         for (const b of body) {
           promises.push(
-            request(url, v.method, injectFake(query), b, injectFake(headers))
+            request(
+              url,
+              v.method,
+              injectFake(query),
+              injectFake(b),
+              injectFake(headers)
+            )
           );
         }
       } else {
