@@ -39,7 +39,7 @@ module.exports = async (json = {}, resCb = () => {}, cb = () => {}) => {
             );
             state[`$${count++}`] = result.response;
             finalResult = {
-              success: result.success,
+              success: finalResult.success && result.success,
               duration: finalResult.duration + result.duration,
               response: result.response,
               errMessage: result.errMessage,
