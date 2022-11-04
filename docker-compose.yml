@@ -7,3 +7,5 @@ services:
     build: .
     ports:
       - "3008:3000"
+    environment:
+      - worker_processes=auto

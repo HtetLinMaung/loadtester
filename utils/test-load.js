@@ -5,39 +5,83 @@ const request = require("./request");
 module.exports = async (json = {}, resCb = () => {}, cb = () => {}) => {
   const items = [];
   for (const [endpointName, v] of Object.entries(json.endpoints)) {
-    const url = `${json.domain}${v.path}`;
-    const headers = v.headers || {};
-    let body = v.body || {};
-    const query = v.query || {};
+    const promises = [];
+
     const n = v.n || v.t;
 
-    const promises = [];
-    for (let i = 0; i < v.t; i++) {
-      if (promises.length % n == 0) {
-        await timeout(1);
+    if ("steps" in v) {
+      for (let i = 0; i < v.t; i++) {
+        if (promises.length % n == 0) {
+          await timeout(1);
+        }
+        promises.push(async () => {
+          const state = {};
+          let count = 1;
+          let finalResult = {
+            success: false,
+            duration: 0,
+            response: null,
+            errMessage: "",
+            stack: "",
+          };
+          for (const step of v.steps) {
+            const url = `${json.domain}${step.path}`;
+            const headers = step.headers || {};
+            const body = step.body || {};
+            const query = step.query || {};
+
+            const result = await request(
+              url,
+              step.method,
+              injectFake(query, { state }),
+              injectFake(body, { state }),
+              injectFake(headers, { state })
+            );
+            state[`$${count++}`] = result.response;
+            finalResult = {
+              success: result.success,
+              duration: finalResult.duration + result.duration,
+              response: result.response,
+              errMessage: result.errMessage,
+              stack: result.stack,
+            };
+          }
+          return finalResult;
+        });
       }
-      if (Array.isArray(body)) {
-        for (const b of body) {
+    } else {
+      const url = `${json.domain}${v.path}`;
+      const headers = v.headers || {};
+      const body = v.body || {};
+      const query = v.query || {};
+
+      for (let i = 0; i < v.t; i++) {
+        if (promises.length % n == 0) {
+          await timeout(1);
+        }
+        if (Array.isArray(body)) {
+          for (const b of body) {
+            promises.push(
+              request(
+                url,
+                v.method,
+                injectFake(query),
+                injectFake(b),
+                injectFake(headers)
+              )
+            );
+          }
+        } else {
           promises.push(
             request(
               url,
               v.method,
               injectFake(query),
-              injectFake(b),
+              injectFake(body),
               injectFake(headers)
             )
           );
         }
-      } else {
-        promises.push(
-          request(
-            url,
-            v.method,
-            injectFake(query),
-            injectFake(body),
-            injectFake(headers)
-          )
-        );
       }
     }
 
