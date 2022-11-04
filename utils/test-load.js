@@ -14,40 +14,42 @@ module.exports = async (json = {}, resCb = () => {}, cb = () => {}) => {
         if (promises.length % n == 0) {
           await timeout(1);
         }
-        promises.push(async () => {
-          const state = {};
-          let count = 1;
-          let finalResult = {
-            success: false,
-            duration: 0,
-            response: null,
-            errMessage: "",
-            stack: "",
-          };
-          for (const step of v.steps) {
-            const url = `${json.domain}${step.path}`;
-            const headers = step.headers || {};
-            const body = step.body || {};
-            const query = step.query || {};
-
-            const result = await request(
-              url,
-              step.method,
-              injectFake(query, { state }),
-              injectFake(body, { state }),
-              injectFake(headers, { state })
-            );
-            state[`$${count++}`] = result.response;
-            finalResult = {
-              success: finalResult.success && result.success,
-              duration: finalResult.duration + result.duration,
-              response: result.response,
-              errMessage: result.errMessage,
-              stack: result.stack,
+        promises.push(
+          (async () => {
+            const state = {};
+            let count = 1;
+            let finalResult = {
+              success: true,
+              duration: 0,
+              response: null,
+              errMessage: "",
+              stack: "",
             };
-          }
-          return finalResult;
-        });
+            for (const step of v.steps) {
+              const url = `${json.domain}${step.path}`;
+              const headers = step.headers || {};
+              const body = step.body || {};
+              const query = step.query || {};
+
+              const result = await request(
+                url,
+                step.method,
+                injectFake(query, { state }),
+                injectFake(body, { state }),
+                injectFake(headers, { state })
+              );
+              state[`$${count++}`] = result.response;
+              finalResult = {
+                success: finalResult.success && result.success,
+                duration: finalResult.duration + result.duration,
+                response: result.response,
+                errMessage: result.errMessage,
+                stack: result.stack,
+              };
+            }
+            return finalResult;
+          })()
+        );
       }
     } else {
       const url = `${json.domain}${v.path}`;
