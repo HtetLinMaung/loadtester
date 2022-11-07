@@ -4,6 +4,9 @@ const request = require("./request");
 
 module.exports = async (json = {}, resCb = () => {}, cb = () => {}) => {
   const items = [];
+  const globalHeaders = json.headers || {};
+  const globalBody = json.body || {};
+  const globalQuery = json.query || {};
   for (const [endpointName, v] of Object.entries(json.endpoints)) {
     const promises = [];
 
@@ -27,9 +30,9 @@ module.exports = async (json = {}, resCb = () => {}, cb = () => {}) => {
             };
             for (const step of v.steps) {
               const url = `${json.domain}${step.path}`;
-              const headers = step.headers || {};
-              const body = step.body || {};
-              const query = step.query || {};
+              const headers = { ...globalHeaders, ...(step.headers || {}) };
+              const body = { ...globalBody, ...(step.body || {}) };
+              const query = { ...globalQuery, ...(step.query || {}) };
 
               const result = await request(
                 url,
@@ -53,9 +56,9 @@ module.exports = async (json = {}, resCb = () => {}, cb = () => {}) => {
       }
     } else {
       const url = `${json.domain}${v.path}`;
-      const headers = v.headers || {};
-      const body = v.body || {};
-      const query = v.query || {};
+      const headers = { ...globalHeaders, ...(v.headers || {}) };
+      const body = { ...globalBody, ...(v.body || {}) };
+      const query = { ...globalQuery, ...(v.query || {}) };
 
       for (let i = 0; i < v.t; i++) {
         if (promises.length % n == 0) {
