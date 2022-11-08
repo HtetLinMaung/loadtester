@@ -22,12 +22,15 @@ module.exports = async (
       res = await axios[method](url, body, defaultOptions);
     }
   } catch (err) {
-    // console.log(err.message);
+    console.log(err.message);
     errMessage = err.message;
     stack = err.stack;
     res = err.response;
     success = false;
   }
+  console.log(body);
+  console.log(headers.Authorization);
+  console.log(res.data);
   const duration = moment.duration(moment().diff(start)).asSeconds();
   return {
     success,
