@@ -6,7 +6,8 @@ module.exports = async (
   method = "get",
   query = {},
   body = {},
-  headers = {}
+  headers = {},
+  options = {}
 ) => {
   let errMessage = "";
   let stack = "";
@@ -14,15 +15,11 @@ module.exports = async (
   let res = null;
   let success = true;
   try {
-    if (method == "get") {
-      res = await axios.get(url, { headers, params: query });
-    } else if (method == "delete") {
-      res = await axios.delete(url, { headers, params: query });
+    const defaultOptions = { ...options, headers, params: query };
+    if (method == "get" || method == "delete") {
+      res = await axios[method](url, defaultOptions);
     } else {
-      res = await axios[method](url, body, {
-        headers,
-        params: query,
-      });
+      res = await axios[method](url, body, defaultOptions);
     }
   } catch (err) {
     // console.log(err.message);
