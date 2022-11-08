@@ -88,7 +88,8 @@ module.exports = async (json = {}, resCb = () => {}, cb = () => {}) => {
               v.method,
               injectFake(query),
               injectFake(body),
-              injectFake(headers)
+              injectFake(headers),
+              injectFake(options)
             )
           );
         }
