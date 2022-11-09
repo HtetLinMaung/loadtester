@@ -30,7 +30,10 @@ module.exports = async (
   }
   console.log(body);
   console.log(headers.Authorization);
-  console.log(res.data);
+  if ("data" in res) {
+    console.log(res.data);
+  }
+
   const duration = moment.duration(moment().diff(start)).asSeconds();
   return {
     success,
