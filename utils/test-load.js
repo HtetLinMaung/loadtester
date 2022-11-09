@@ -21,7 +21,6 @@ module.exports = async (json = {}, resCb = () => {}, cb = () => {}) => {
         promises.push(
           (async () => {
             const state = {};
-            let count = 1;
             let finalResult = {
               success: true,
               duration: 0,
@@ -29,38 +28,54 @@ module.exports = async (json = {}, resCb = () => {}, cb = () => {}) => {
               errMessage: "",
               stack: "",
             };
-            for (const step of v.steps) {
-              const url = `${json.domain}${step.path}`;
-              const headers = {
-                ...globalHeaders,
-                ...(v.headers || {}),
-                ...(step.headers || {}),
-              };
-              const body = {
-                ...globalBody,
-                ...(v.body || {}),
-                ...(step.body || {}),
-              };
-              const query = {
-                ...globalQuery,
-                ...(v.query || {}),
-                ...(step.query || {}),
-              };
-              const options = {
-                ...globalOptions,
-                ...(v.options || {}),
-                ...(step.options || {}),
-              };
 
+            for (const [j, step] of v.steps.entries()) {
+              const url = `${json.domain}${step.path}`;
+              const headers = injectFake(
+                {
+                  ...globalHeaders,
+                  ...(v.headers || {}),
+                  ...(step.headers || {}),
+                },
+                { state }
+              );
+              const body = injectFake(
+                {
+                  ...globalBody,
+                  ...(v.body || {}),
+                  ...(step.body || {}),
+                },
+                { state }
+              );
+              const query = injectFake(
+                {
+                  ...globalQuery,
+                  ...(v.query || {}),
+                  ...(step.query || {}),
+                },
+                { state }
+              );
+              const options = injectFake(
+                {
+                  ...globalOptions,
+                  ...(v.options || {}),
+                  ...(step.options || {}),
+                },
+                { state }
+              );
+
+              state[`$${j + 1}_headers`] = headers;
+              state[`$${j + 1}_body`] = body;
               const result = await request(
                 url,
                 step.method,
-                injectFake(query, { state }),
-                injectFake(body, { state }),
-                injectFake(headers, { state }),
-                injectFake(options, { state })
+                query,
+                body,
+                headers,
+                options
               );
-              state[`$${count++}`] = result.response;
+              state[`$${j + 1}`] = result.response;
+
               finalResult = {
                 success: finalResult.success && result.success,
                 duration: finalResult.duration + result.duration,
