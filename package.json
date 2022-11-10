@@ -22,6 +22,7 @@
     "code-alchemy": "^1.1.9",
     "moment": "^2.29.4",
     "starless-async": "^1.0.0",
+    "starless-loadtester": "^1.0.15",
     "uuid": "^9.0.0"
   }
 }

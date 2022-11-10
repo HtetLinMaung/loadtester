@@ -1,5 +1,5 @@
 const { brewBlankExpressFunc } = require("code-alchemy");
-const testLoad = require("../utils/test-load");
+const testLoad = require("starless-loadtester/test-load");
 const server = require("starless-server");
 const { v4 } = require("uuid");
 const { finished } = require("../constants");
