@@ -20,7 +20,7 @@
     "@faker-js/faker": "^7.6.0",
     "code-alchemy": "^1.1.9",
     "starless-async": "^1.0.0",
-    "starless-loadtester": "^1.0.15",
+    "starless-loadtester": "^1.0.18",
     "uuid": "^9.0.0"
   }
 }
